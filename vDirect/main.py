@@ -254,9 +254,9 @@ Now works!
 $ python vdirect.py vsearch vog -pmax 10 -pmin 10 | python vdirect.py vsummary vog
 works!
 
-python __main__.py -base http://127.0.0.1:8000/ vsearch vog -pmax 10 -pmin 10
-python __main__.py -base http://127.0.0.1:8000/ vsearch species -n corona
-python __main__.py -base http://127.0.0.1:8000/ vsearch proteins -n corona
+python main.py -base http://127.0.0.1:8000/ vsearch vog -pmax 10 -pmin 10
+python main.py -base http://127.0.0.1:8000/ vsearch species -n corona
+python main.py -base http://127.0.0.1:8000/ vsearch proteins -n corona
 
 
 Not working:
