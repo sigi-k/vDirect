@@ -9,7 +9,6 @@ import json
 # entweder über command line parameter. oder über environment variable
 
 #set log level for requests module
-from requests import HTTPError
 
 urllib3_logger = logging.getLogger('urllib3')
 urllib3_logger.setLevel(logging.CRITICAL)
@@ -76,7 +75,7 @@ def vsummary(return_object="vog", format="json", **params):
     return response
 
 
-def vsearch(command='vsearch', return_object="vog", format="json", **params):
+def vsearch(return_object="vog", format="json", **params):
     """Yield the response (vog/species/protein summary of a query."""
     base_url = params.get('base_url')
 
@@ -84,8 +83,6 @@ def vsearch(command='vsearch', return_object="vog", format="json", **params):
     if return_object not in ["vog", "species", "protein"]:
         # return_object does not compare equal to any enum value:
         raise ValueError("Invalid return object " + str(return_object))
-
-    assert command == 'vsearch'
 
     # _valid_formats = ["json", "df", "stdout"]
 
@@ -126,6 +123,8 @@ def vsearch(command='vsearch', return_object="vog", format="json", **params):
     #     except TypeError:
     #         response = ' '.join(str(i) for i in response)
     # return response
+
+
 
 
 # function to save hmm vFetch response objects (for now just hmm, msa)

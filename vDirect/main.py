@@ -1,3 +1,5 @@
+import json
+
 from API_requests import vsummary, vsearch, vfetch
 import sys
 import argparse
@@ -164,6 +166,7 @@ def main():
 
     args = parser.parse_args()
 
+
     # ToDo: piping when search returns an error -> should recognize it.
     if args.command == 'vfetch':
         if not sys.stdin.isatty():
@@ -211,8 +214,10 @@ def main():
         elif args.return_object == 'protein' or args.return_object == 'vog':
             if not sys.stdin.isatty():
                 # ToDo: ????
-                input = args.id.read()
-                print(input)
+                # input = args.id.read()
+                # print(input)
+                inp = json.loads(args.id.read())
+                print(inp)
                 # id = args.id.read().split()
                 # # check if dataframe: if yes, get every 2nd value
                 # if id[1] == '0':
@@ -231,7 +236,7 @@ def main():
     elif args.command == 'vsearch':
         r = vsearch(**vars(args))
         if r.status_code == 200:
-            print(r.json(), file=sys.stdout)
+            print(json.dumps(r.json()), file=sys.stdout)
             # return r.json()
         else:
             sys.exit(r.json().get('detail'))
