@@ -3,12 +3,11 @@ import pandas as pd
 import requests
 import json
 
-
 # base_url = 'http://127.0.0.1:8000/'
 # ToDo: change base URL to new server URL muss ein Paremeter von Vdirect sein
 # entweder über command line parameter. oder über environment variable
 
-#set log level for requests module
+# set log level for requests module
 
 urllib3_logger = logging.getLogger('urllib3')
 urllib3_logger.setLevel(logging.CRITICAL)
@@ -75,6 +74,24 @@ def vsummary(return_object="vog", format="json", **params):
     return response
 
 
+# def vsearch_species(base_url, ids, name, format, phage, source, version, sort):
+# def vsearch_species(base_url, **params):
+#     url = base_url + 'vsearch/species/'
+#     # params = {
+#     #     "ids": ids,
+#     #     "name": name,
+#     #     "format": format,
+#     #     "phage": phage,
+#     #     "source": source,
+#     #     "version": version,
+#     #     "sort": sort
+#     # }
+#     print(params)
+#     # API GET request
+#     r = requests.get(url=url, params=params)
+#     return r
+
+
 def vsearch(return_object="vog", format="json", **params):
     """Yield the response (vog/species/protein summary of a query."""
     base_url = params.get('base_url')
@@ -92,7 +109,6 @@ def vsearch(return_object="vog", format="json", **params):
     # ToDo: 200 oder nicht 200
     r = requests.get(url=url, params=params)
     return r
-
 
     # response = r.json()
     #
@@ -125,6 +141,22 @@ def vsearch(return_object="vog", format="json", **params):
     # return response
 
 
+def vsearch_species(base_url, **params):
+    url = base_url + 'vsearch/species/'
+    r = requests.get(url=url, params=params)
+    return r
+
+
+def vsearch_protein(base_url, **params):
+    url = base_url + 'vsearch/protein/'
+    r = requests.get(url=url, params=params)
+    return r
+
+
+def vsearch_vog(base_url, **params):
+    url = base_url + 'vsearch/vog/'
+    r = requests.get(url=url, params=params)
+    return r
 
 
 # function to save hmm vFetch response objects (for now just hmm, msa)
@@ -134,4 +166,3 @@ def save_object(object, output_path="./test.txt"):
     with open(output_path, 'a') as file:
         for document in object:
             file.write(document)
-

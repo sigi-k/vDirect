@@ -1,6 +1,6 @@
 import json
 
-from API_requests import vsummary, vsearch, vfetch
+from API_requests import vsummary, vsearch, vfetch, vsearch_species, vsearch_protein
 import sys
 import argparse
 
@@ -233,11 +233,38 @@ def main():
             raise Exception("Unknown return object")
 
 
+
+#Todo: finish SEARCHES
     elif args.command == 'vsearch':
-        r = vsearch(**vars(args))
+        if args.return_object == 'species':
+            r = vsearch_species(base_url=args.base_url, ids=args.ids, name=args.name, phage=args.phage, source=args.source, version=args.version, sort=args.sort)
+
+        elif args.return_object == 'protein':
+            r = vsearch_protein(base_url=args.base_url, species_name=args.species_name, taxon_id=args.taxon_id, VOG_id=args.VOG_id, sort=args.sort)
+
+    #ToDo: Add remaining parameters
+        elif args.return_object == 'vog':
+            r = vsearch_protein(base_url=args.base_url, ids=args.id, pmin=args.pmin, pmax=args.pmax, smin=args.smin, smax=args.smax,
+                                functional_category=args.functional_category, consensus_function=args.consensus_function,
+                                mingLCA=args.mingLCA, sort=args.sort, union=args.union)
+
+            # maxgLCA: Optional[int] = None,
+            # mingGLCA: Optional[int] = None,
+            # maxgGLCA: Optional[int] = None,
+            # ancestors: Optional[Set[str]] = Query(None),
+            # h_stringency: Optional[bool] = None,
+            # m_stringency: Optional[bool] = None,
+            # l_stringency: Optional[bool] = None,
+            # virus_specific: Optional[bool] = None,
+            # phages_nonphages: Optional[str] = None,
+            # proteins: Optional[Set[str]] = Query(None),
+            # species: Optional[Set[str]] = Query(None),
+            # tax_id: Optional[Set[int]] = Query(None),
+        else:
+            raise ValueError("invalid return object")
+
         if r.status_code == 200:
             print(json.dumps(r.json()), file=sys.stdout)
-            # return r.json()
         else:
             sys.exit(r.json().get('detail'))
 
