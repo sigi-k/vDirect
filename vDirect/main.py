@@ -263,7 +263,10 @@ def main():
         else:
             raise ValueError("invalid return object")
 
+        #ToDo: how to print it..?
         if r.status_code == 200:
+            for ele in r.json():
+                print(ele['taxon_id'], file=sys.stdout)
             print(json.dumps(r.json()), file=sys.stdout)
         else:
             sys.exit(r.json().get('detail'))

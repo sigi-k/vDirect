@@ -141,9 +141,21 @@ def vsearch(return_object="vog", format="json", **params):
     # return response
 
 
+# function to save hmm vFetch response objects (for now just hmm, msa)
+def save_object(object, output_path="./test.txt"):
+    """Saves the response object to output path"""
+
+    with open(output_path, 'a') as file:
+        for document in object:
+            file.write(document)
+
+
+
 def vsearch_species(base_url, **params):
     url = base_url + 'vsearch/species/'
     r = requests.get(url=url, params=params)
+    print(params)
+    print(r.url)
     return r
 
 
@@ -158,11 +170,3 @@ def vsearch_vog(base_url, **params):
     r = requests.get(url=url, params=params)
     return r
 
-
-# function to save hmm vFetch response objects (for now just hmm, msa)
-def save_object(object, output_path="./test.txt"):
-    """Saves the response object to output path"""
-
-    with open(output_path, 'a') as file:
-        for document in object:
-            file.write(document)
