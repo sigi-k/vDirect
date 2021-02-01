@@ -1,7 +1,7 @@
-import json
-
-from API_requests import vsearch_species, vsearch_protein, vsummary_species, \
-    vsummary_protein, vsummary_vog, vfetch_vog_msa, vfetch_vog_hmm, vfetch_protein_faa, vfetch_protein_fna, vsearch_vog
+from API_requests import vsearch_species, vsearch_protein, vsearch_vog, \
+    get_vsummary_species, get_vsummary_protein, get_vsummary_vog, post_vsummary_species, post_vsummary_protein, \
+    post_vsummary_vog, post_vfetch_vog_msa, post_vfetch_vog_hmm, post_vfetch_protein_faa, post_vfetch_protein_fna, \
+    get_vfetch_vog_msa, get_vfetch_vog_hmm, get_vfetch_protein_faa, get_vfetch_protein_fna
 import sys
 import argparse
 
@@ -23,7 +23,6 @@ Parser      vsearch_parser      species_search_parser
 
 
 def main():
-    # ToDo: Make URL environment variable?
     parser = argparse.ArgumentParser(description='Welcome to vDirect!', epilog='Thank you for using vDirect!')
 
     # ToDo Base URL as environment variable?
@@ -172,74 +171,120 @@ def main():
 
     args = parser.parse_args()
 
-
     # ToDo: piping when search returns an error -> should recognize it.
     # FETCH:
     if args.command == 'vfetch':
-        if args.return_object == 'vog':
-            if args.return_type == 'msa':
-                print(vfetch_vog_msa(base_url=args.base_url, id=args.id),  file=sys.stdout)
-            elif args.return_type == 'hmm':
-                print(vfetch_vog_hmm(base_url=args.base_url, id=args.id),  file=sys.stdout)
+        # if ID parameter given
+        if args.id:
+            if args.return_object == 'vog':
+                if args.return_type == 'msa':
+                    r = get_vfetch_vog_msa(base_url=args.base_url, id=args.id)
+                elif args.return_type == 'hmm':
+                    r = get_vfetch_vog_hmm(base_url=args.base_url, id=args.id)
+                else:
+                    raise Exception("Invalid return type")
+            elif args.return_object == 'protein':
+                if args.return_type == 'faa':
+                    r = get_vfetch_protein_faa(base_url=args.base_url, id=args.id)
+                elif args.return_type == 'fna':
+                    r = get_vfetch_protein_fna(base_url=args.base_url, id=args.id)
+                else:
+                    raise Exception("Invalid return type")
             else:
-                raise Exception("Invalid return type")
-        elif args.return_object == 'protein':
-            if args.return_type == 'faa':
-                print(vfetch_protein_faa(base_url=args.base_url, id=args.id),  file=sys.stdout)
-            elif args.return_type == 'fna':
-                print(vfetch_protein_fna(base_url=args.base_url, id=args.id),  file=sys.stdout)
-            else:
-                raise Exception("Invalid return type")
+                raise Exception("Invalid return object")
 
+        # if no ids given as parameters -> read from stdin
+        else:
+            input = sys.stdin.read()
+            if args.return_object == 'protein':
+                if args.return_type == 'faa':
+                    r = post_vfetch_protein_faa(base_url=args.base_url, input=input)
+                elif args.return_type == 'fna':
+                    r = post_vfetch_protein_fna(base_url=args.base_url, input=input)
+                else:
+                    raise Exception("Invalid return type")
+            elif args.return_object == 'vog':
+                if args.return_type == 'msa':
+                    r = post_vfetch_vog_msa(base_url=args.base_url, input=input)
+                elif args.return_type == 'hmm':
+                    r = post_vfetch_vog_hmm(base_url=args.base_url, input=input)
+                else:
+                    raise Exception("Invalid return type")
+            else:
+                raise Exception("Invalid return object")
+
+        #ToDo: test posting..
+        if r.status_code == 200:
+            print(r.json(), file=sys.stdout)
+        else:
+            print(r.json().get('detail'), file=sys.stderr)
+            sys.exit(1)
 
 
     # SUMMARY:
     elif args.command == 'vsummary':
-        if args.return_object == 'species':
-            #ToDo: Rename taxon_id to just id on the server..
-            r = vsummary_species(taxon_id=args.id, base_url=args.base_url)
+        # if ID parameter given
+        if args.id:
+            if args.return_object == 'species':
+                r = get_vsummary_species(taxon_id=args.id, base_url=args.base_url)
 
-        elif args.return_object == 'protein':
-            r = vsummary_protein(id=args.id, base_url=args.base_url)
+            elif args.return_object == 'protein':
+                r = get_vsummary_protein(id=args.id, base_url=args.base_url)
 
-        elif args.return_object == 'vog':
-            r = vsummary_vog(id=args.id, base_url=args.base_url)
+            elif args.return_object == 'vog':
+                r = get_vsummary_vog(id=args.id, base_url=args.base_url)
+            else:
+                raise Exception("Invalid return object")
+        # if no ids given as parameters -> read from stdin
         else:
-            raise Exception("Invalid return object")
+            input = sys.stdin.read()
+            if args.return_object == 'species':
+                r = post_vsummary_species(base_url=args.base_url, input=input)
+            elif args.return_object == 'protein':
+                r = post_vsummary_protein(base_url=args.base_url, input=input)
+            elif args.return_object == 'vog':
+                r = post_vsummary_vog(base_url=args.base_url, input=input)
+            else:
+                raise Exception("Invalid return object")
 
+        #ToDo: test posting..
         if r.status_code == 200:
             print(r.json(), file=sys.stdout)
             # print(json.dumps(r.json()), file=sys.stdout)
         else:
-            sys.exit(r.json().get('detail'))
+            print(r.json().get('detail'), file=sys.stderr)
+            sys.exit(1)
 
 
     # SEARCHES:
     elif args.command == 'vsearch':
         if args.return_object == 'species':
-            r = vsearch_species(base_url=args.base_url, ids=args.ids, name=args.name, phage=args.phage, source=args.source, version=args.version, sort=args.sort)
+            r = vsearch_species(base_url=args.base_url, ids=args.ids, name=args.name, phage=args.phage,
+                                source=args.source, version=args.version, sort=args.sort)
 
         elif args.return_object == 'protein':
-            r = vsearch_protein(base_url=args.base_url, species_name=args.species_name, taxon_id=args.taxon_id, VOG_id=args.VOG_id, sort=args.sort)
+            r = vsearch_protein(base_url=args.base_url, species_name=args.species_name, taxon_id=args.taxon_id,
+                                VOG_id=args.VOG_id, sort=args.sort)
 
         elif args.return_object == 'vog':
-            r = vsearch_vog(base_url=args.base_url, id=args.id, pmin=args.pmin, pmax=args.pmax, smin=args.smin, smax=args.smax,
-                                functional_category=args.functional_category, consensus_function=args.consensus_function,
-                                mingLCA=args.mingLCA, maxgLCA=args.maxgLCA, mingGLCA=args.mingGLCA, maxgGLCA=args.maxgGLCA,
-                                ancestors=args.ancestors, h_stringency=args.h_stringency, m_stringency=args.m_stringency,
-                                l_stringency=args.l_stringency, virus_specific=args.virus_specific, phages_nonphages=args.phages_nonphages,
-                                proteins=args.proteins, species=args.species, tax_id=args.tax_id, sort=args.sort, union=args.union)
+            r = vsearch_vog(base_url=args.base_url, id=args.id, pmin=args.pmin, pmax=args.pmax, smin=args.smin,
+                            smax=args.smax,
+                            functional_category=args.functional_category, consensus_function=args.consensus_function,
+                            mingLCA=args.mingLCA, maxgLCA=args.maxgLCA, mingGLCA=args.mingGLCA, maxgGLCA=args.maxgGLCA,
+                            ancestors=args.ancestors, h_stringency=args.h_stringency, m_stringency=args.m_stringency,
+                            l_stringency=args.l_stringency, virus_specific=args.virus_specific,
+                            phages_nonphages=args.phages_nonphages,
+                            proteins=args.proteins, species=args.species, tax_id=args.tax_id, sort=args.sort,
+                            union=args.union)
         else:
             raise ValueError("Invalid return object")
 
-        #ToDo: how to print it..?
+        # ToDo: how to print it..?
         if r.status_code == 200:
             print(r.json())
-            # for ele in r.json():
-            #     print(ele['taxon_id'], file=sys.stdout)
-            # # print(json.dumps(r.json()), file=sys.stdout)
         else:
-            sys.exit(r.json().get('detail'))
+            print(r.json().get('detail'), file=sys.stderr)
+            sys.exit(1)
 
 
 if __name__ == '__main__':
@@ -247,7 +292,7 @@ if __name__ == '__main__':
         main()
     except Exception as ex:
         print("EXCEPTION")
-        print(ex, file=sys.stdout)
+        print(ex, file=sys.stderr)
         sys.exit(1)
 
 # ToDo:
