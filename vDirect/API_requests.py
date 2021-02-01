@@ -1,7 +1,5 @@
 import logging
-import pandas as pd
 import requests
-import json
 
 """
 Here URLs are built and Requests are made.
@@ -75,7 +73,6 @@ def vsearch_protein(base_url, **params):
 def vsearch_vog(base_url, **params):
     url = base_url + 'vsearch/vog/'
     r = requests.get(url=url, params=params)
-    print(r.url)
     return r
 
 
