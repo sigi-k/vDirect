@@ -1,17 +1,34 @@
 import json
 
-from API_requests import vsummary, vsearch, vfetch, vsearch_species, vsearch_protein
+from API_requests import vsearch_species, vsearch_protein, vsummary_species, \
+    vsummary_protein, vsummary_vog, vfetch_vog_msa, vfetch_vog_hmm, vfetch_protein_faa, vfetch_protein_fna, vsearch_vog
 import sys
 import argparse
 
 """
-This is the implementation of the Argument Parser
+This is the implementation of the Argument Parser, with several subparsers
+Parsing Structure:
+Parser      vsearch_parser      species_search_parser
+                                protein_search_parser
+                                vog_search_parser
+                                
+            vsummmary_parser    species_summary_parser
+                                protein_summary_parser
+                                vog_summary_parser
+                                
+            vfetch_parser       protein_fetch_parser
+                                vog_fetch_parser
+                                                            
 """
 
 
 def main():
-    # ToDo: URL paremeter für base URL. entweder nach den Options...
+    # ToDo: Make URL environment variable?
     parser = argparse.ArgumentParser(description='Welcome to vDirect!', epilog='Thank you for using vDirect!')
+
+    # ToDo Base URL as environment variable?
+    parser.add_argument('-base', type=str, action='store', nargs='?', dest='base_url', help="specify the base URL")
+
     subparsers = parser.add_subparsers(dest='command', help='Subcommands')
 
     vsearch_parser = subparsers.add_parser('vsearch', help='vsearch subparser help')
@@ -123,30 +140,22 @@ def main():
                                     help="VOG unique ID(s)")
     vog_summary_parser.add_argument('-f', '-format', type=str, action='store', nargs='?', dest='format',
                                     choices=['json', 'df'], help="specify a format: 'json' or 'df'")
-    # vog_summary_parser.add_argument('-sort', type=str, action='store', nargs='?', dest='sort',
-    #                                    help="Parameter sort results by")
 
     # add arguments for protein_summary_parser:
     protein_summary_parser.add_argument('-id', type=str, nargs='+', dest='id', default=sys.stdin,
                                         help="protein ID(s)")
     protein_summary_parser.add_argument('-f', '-format', type=str, action='store', nargs='?', dest='format',
                                         choices=['json', 'df'], help="specify a format: 'json' or 'df'")
-    # protein_summary_parser.add_argument('-sort', type=str, action='store', nargs='?', dest='sort',
-    #                                    help="Parameter sort results by")
 
     # add arguments for species_summary_parser:
     species_summary_parser.add_argument('-id', type=int, nargs='+', dest='id', default=sys.stdin,
                                         help="taxon ID(s)")
     species_summary_parser.add_argument('-f', '-format', type=str, action='store', nargs='?', dest='format',
                                         choices=['json', 'df'], help="specify a format: 'json' or 'df'")
-    # species_summary_parser.add_argument('-sort', type=str, action='store', nargs='?', dest='sort',
-    #                                    help="Parameter sort results by")
 
     # add subparsers for vFetch:
     vfetch_sps = vfetch_parser.add_subparsers(dest='return_object', help='subparsers for vfetch_parser')
     vog_fetch_parser = vfetch_sps.add_parser('vog', help='vfetch subparser for vog fetch')
-    # # species fetch does not exist
-    # species_fetch_parser = vfetch_sps.add_parser('species', help='vfetch subparser for species fetch')
     protein_fetch_parser = vfetch_sps.add_parser('protein', help='vfetch subparser for protein fetch')
 
     # add arguments for vog_fetch_parser:
@@ -161,80 +170,51 @@ def main():
     protein_fetch_parser.add_argument('-id', type=str, nargs='+', dest='id', default=sys.stdin,
                                       help="Protein identifiers")
 
-    # ToDo Base URL as environment variable?
-    parser.add_argument('-base', type=str, action='store', nargs='?', dest='base_url', help="specify the base URL")
-
     args = parser.parse_args()
 
 
     # ToDo: piping when search returns an error -> should recognize it.
+    # FETCH:
     if args.command == 'vfetch':
-        if not sys.stdin.isatty():
-            id = args.id.read().split()
-            # check if dataframe: if yes, get every 2nd value
-            if id[1] == '0':
-                id = id[2::2]
-            # check if json format:
-            if id[0][0] == '[':
-                raise Exception("The search output cannot be 'json' when piping.")
-        else:
-            id = args.id
+        if args.return_object == 'vog':
+            if args.return_type == 'msa':
+                print(vfetch_vog_msa(base_url=args.base_url, id=args.id),  file=sys.stdout)
+            elif args.return_type == 'hmm':
+                print(vfetch_vog_hmm(base_url=args.base_url, id=args.id),  file=sys.stdout)
+            else:
+                raise Exception("Invalid return type")
+        elif args.return_object == 'protein':
+            if args.return_type == 'faa':
+                print(vfetch_protein_faa(base_url=args.base_url, id=args.id),  file=sys.stdout)
+            elif args.return_type == 'fna':
+                print(vfetch_protein_fna(base_url=args.base_url, id=args.id),  file=sys.stdout)
+            else:
+                raise Exception("Invalid return type")
 
-        print(vfetch(return_object=args.return_object, return_type=args.return_type, id=id, base_url=args.base_url),
-              file=sys.stdout)
 
 
+    # SUMMARY:
     elif args.command == 'vsummary':
         if args.return_object == 'species':
-            if not sys.stdin.isatty():
-                input = args.id.read().split()
-                try:
-                    if input[0][0] == '[':
-                        raise KeyError("The search output cannot be in the 'json' format when piping.")
-                    # ToDo: better way to check for exception?
-                    if input[0] == 'No':
-                        raise IndexError("No species match the search criteria.")
-                    elif input[0] == 'taxon_id':
-                        id = input[2::2]
-                    else:
-                        id = []
-                        for ele in input:
-                            id.append(int(ele))
-                except KeyError as k:
-                    raise Exception(k)
-                except IndexError as i:
-                    raise Exception(i)
-                except Exception:
-                    raise Exception("Species search not successful.")
-            else:
-                id = args.id
-            print(vsummary(return_object=args.return_object, format=args.format, taxon_id=id, base_url=args.base_url),
-                  file=sys.stdout)
+            #ToDo: Rename taxon_id to just id on the server..
+            r = vsummary_species(taxon_id=args.id, base_url=args.base_url)
 
-        elif args.return_object == 'protein' or args.return_object == 'vog':
-            if not sys.stdin.isatty():
-                # ToDo: ????
-                # input = args.id.read()
-                # print(input)
-                inp = json.loads(args.id.read())
-                print(inp)
-                # id = args.id.read().split()
-                # # check if dataframe: if yes, get every 2nd value
-                # if id[1] == '0':
-                #     id = id[2::2]
-                # # check if json format:
-                # if id[0][0] == '[':
-                #     raise Exception("The search output cannot be in the 'json' format when piping.")
-            else:
-                id = args.id
-            print(vsummary(return_object=args.return_object, format=args.format, id=id, base_url=args.base_url),
-                  file=sys.stdout)
+        elif args.return_object == 'protein':
+            r = vsummary_protein(id=args.id, base_url=args.base_url)
+
+        elif args.return_object == 'vog':
+            r = vsummary_vog(id=args.id, base_url=args.base_url)
         else:
-            raise Exception("Unknown return object")
+            raise Exception("Invalid return object")
+
+        if r.status_code == 200:
+            print(r.json(), file=sys.stdout)
+            # print(json.dumps(r.json()), file=sys.stdout)
+        else:
+            sys.exit(r.json().get('detail'))
 
 
-
-#Todo: finish SEARCHES
+    # SEARCHES:
     elif args.command == 'vsearch':
         if args.return_object == 'species':
             r = vsearch_species(base_url=args.base_url, ids=args.ids, name=args.name, phage=args.phage, source=args.source, version=args.version, sort=args.sort)
@@ -242,32 +222,22 @@ def main():
         elif args.return_object == 'protein':
             r = vsearch_protein(base_url=args.base_url, species_name=args.species_name, taxon_id=args.taxon_id, VOG_id=args.VOG_id, sort=args.sort)
 
-    #ToDo: Add remaining parameters
         elif args.return_object == 'vog':
-            r = vsearch_protein(base_url=args.base_url, ids=args.id, pmin=args.pmin, pmax=args.pmax, smin=args.smin, smax=args.smax,
+            r = vsearch_vog(base_url=args.base_url, id=args.id, pmin=args.pmin, pmax=args.pmax, smin=args.smin, smax=args.smax,
                                 functional_category=args.functional_category, consensus_function=args.consensus_function,
-                                mingLCA=args.mingLCA, sort=args.sort, union=args.union)
-
-            # maxgLCA: Optional[int] = None,
-            # mingGLCA: Optional[int] = None,
-            # maxgGLCA: Optional[int] = None,
-            # ancestors: Optional[Set[str]] = Query(None),
-            # h_stringency: Optional[bool] = None,
-            # m_stringency: Optional[bool] = None,
-            # l_stringency: Optional[bool] = None,
-            # virus_specific: Optional[bool] = None,
-            # phages_nonphages: Optional[str] = None,
-            # proteins: Optional[Set[str]] = Query(None),
-            # species: Optional[Set[str]] = Query(None),
-            # tax_id: Optional[Set[int]] = Query(None),
+                                mingLCA=args.mingLCA, maxgLCA=args.maxgLCA, mingGLCA=args.mingGLCA, maxgGLCA=args.maxgGLCA,
+                                ancestors=args.ancestors, h_stringency=args.h_stringency, m_stringency=args.m_stringency,
+                                l_stringency=args.l_stringency, virus_specific=args.virus_specific, phages_nonphages=args.phages_nonphages,
+                                proteins=args.proteins, species=args.species, tax_id=args.tax_id, sort=args.sort, union=args.union)
         else:
-            raise ValueError("invalid return object")
+            raise ValueError("Invalid return object")
 
         #ToDo: how to print it..?
         if r.status_code == 200:
-            for ele in r.json():
-                print(ele['taxon_id'], file=sys.stdout)
-            print(json.dumps(r.json()), file=sys.stdout)
+            print(r.json())
+            # for ele in r.json():
+            #     print(ele['taxon_id'], file=sys.stdout)
+            # # print(json.dumps(r.json()), file=sys.stdout)
         else:
             sys.exit(r.json().get('detail'))
 
@@ -281,6 +251,8 @@ if __name__ == '__main__':
         sys.exit(1)
 
 # ToDo:
+# write a function for formatting?
+# for Piping
 """
 When piping: 
 if no results -> should return "no matches for the search criteria"
@@ -291,9 +263,7 @@ works!
 
 python main.py -base http://127.0.0.1:8000/ vsearch vog -pmax 10 -pmin 10
 python main.py -base http://127.0.0.1:8000/ vsearch species -n corona
-python main.py -base http://127.0.0.1:8000/ vsearch proteins -n corona
+python main.py -base http://127.0.0.1:8000/ vsearch protein -n corona
 
-
-Not working:
 python vdirect.py vsearch vog -pmax 10 -pmin 33 | python vdirect.py vsummary vog
 """
