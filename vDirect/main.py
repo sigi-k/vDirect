@@ -1,7 +1,14 @@
-from .API_requests import vsearch_species, vsearch_protein, vsearch_vog, \
+if __name__ == '__main__':
+    from API_requests import vsearch_species, vsearch_protein, vsearch_vog, \
     get_vsummary_species, get_vsummary_protein, get_vsummary_vog, post_vsummary_species, post_vsummary_protein, \
     post_vsummary_vog, post_vfetch_vog_msa, post_vfetch_vog_hmm, post_vfetch_protein_faa, post_vfetch_protein_fna, \
     get_vfetch_vog_msa, get_vfetch_vog_hmm, get_vfetch_protein_faa, get_vfetch_protein_fna
+else:
+    from .API_requests import vsearch_species, vsearch_protein, vsearch_vog, \
+    get_vsummary_species, get_vsummary_protein, get_vsummary_vog, post_vsummary_species, post_vsummary_protein, \
+    post_vsummary_vog, post_vfetch_vog_msa, post_vfetch_vog_hmm, post_vfetch_protein_faa, post_vfetch_protein_fna, \
+    get_vfetch_vog_msa, get_vfetch_vog_hmm, get_vfetch_protein_faa, get_vfetch_protein_fna
+
 import sys
 import argparse
 
