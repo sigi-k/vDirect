@@ -101,8 +101,8 @@ def main():
     vog_search_parser.add_argument('-f', '-format', type=str, action='store', nargs='?', dest='format',
                                    choices=['json', 'df', 'stdout'], default='df',
                                    help="specify a format: 'json' or 'df' or 'stdout'")
-    vog_search_parser.add_argument('-sort', type=str, action='store', nargs='?', dest='sort',
-                                   help="Parameter sort results by")
+    # vog_search_parser.add_argument('-sort', type=str, action='store', nargs='?', dest='sort',
+    #                                help="Parameter sort results by")
 
     # add arguments for species_search_parser:
     species_search_parser.add_argument('-id', type=int, action='append', nargs='+', dest='ids',
@@ -119,8 +119,8 @@ def main():
     species_search_parser.add_argument('-f', '-format', type=str, action='store', nargs='?', dest='format',
                                        choices=['json', 'df', 'stdout'], default='stdout',
                                        help="specify a format: 'json' or 'df' or 'stdout'")
-    species_search_parser.add_argument('-sort', type=str, action='store', nargs='?', dest='sort',
-                                       help="Parameter sort results by")
+    # species_search_parser.add_argument('-sort', type=str, action='store', nargs='?', dest='sort',
+    #                                    help="Parameter sort results by")
 
     # add arguments for protein_search_parser:
     protein_search_parser.add_argument('-tid', '-taxonid', type=int, action='append', nargs='+', dest='taxon_id',
@@ -132,8 +132,8 @@ def main():
     protein_search_parser.add_argument('-f', '-format', type=str, action='store', nargs='?', dest='format',
                                        choices=['json', 'df', 'stdout'], default='df',
                                        help="specify a format: 'json', 'df' or 'stdout'")
-    protein_search_parser.add_argument('-sort', type=str, action='store', nargs='?', dest='sort',
-                                       help="Parameter sort results by")
+    # protein_search_parser.add_argument('-sort', type=str, action='store', nargs='?', dest='sort',
+    #                                    help="Parameter sort results by")
 
     # add subparsers for vSummary:
     vsummary_sps = vsummary_parser.add_subparsers(dest='return_object', help='subparsers for vsummary_parser')
@@ -267,22 +267,20 @@ def main():
     elif args.command == 'vsearch':
         if args.return_object == 'species':
             r = vsearch_species(base_url=args.base_url, ids=args.ids, name=args.name, phage=args.phage,
-                                source=args.source, version=args.version, sort=args.sort)
+                                source=args.source, version=args.version)
 
         elif args.return_object == 'protein':
             r = vsearch_protein(base_url=args.base_url, species_name=args.species_name, taxon_id=args.taxon_id,
-                                VOG_id=args.VOG_id, sort=args.sort)
+                                VOG_id=args.VOG_id)
 
         elif args.return_object == 'vog':
             r = vsearch_vog(base_url=args.base_url, id=args.id, pmin=args.pmin, pmax=args.pmax, smin=args.smin,
-                            smax=args.smax,
-                            functional_category=args.functional_category, consensus_function=args.consensus_function,
+                            smax=args.smax, functional_category=args.functional_category, consensus_function=args.consensus_function,
                             mingLCA=args.mingLCA, maxgLCA=args.maxgLCA, mingGLCA=args.mingGLCA, maxgGLCA=args.maxgGLCA,
                             ancestors=args.ancestors, h_stringency=args.h_stringency, m_stringency=args.m_stringency,
                             l_stringency=args.l_stringency, virus_specific=args.virus_specific,
-                            phages_nonphages=args.phages_nonphages,
-                            proteins=args.proteins, species=args.species, tax_id=args.tax_id, sort=args.sort,
-                            union=args.union)
+                            phages_nonphages=args.phages_nonphages, proteins=args.proteins, species=args.species,
+                            tax_id=args.tax_id, union=args.union)
         else:
             raise ValueError("Invalid return object")
 

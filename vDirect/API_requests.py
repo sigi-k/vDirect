@@ -16,7 +16,7 @@ def get_vfetch_vog_msa(base_url, id):
     params = {
         "id": id
     }
-    return requests.get(url, params)
+    return requests.get(url, params=params)
 
 
 def get_vfetch_vog_hmm(base_url, id):
@@ -24,7 +24,7 @@ def get_vfetch_vog_hmm(base_url, id):
     params = {
         "id": id
     }
-    return requests.get(url, params)
+    return requests.get(url, params=params)
 
 
 def get_vfetch_protein_faa(base_url, id):
@@ -32,7 +32,7 @@ def get_vfetch_protein_faa(base_url, id):
     params = {
         "id": id
     }
-    return requests.get(url, params)
+    return requests.get(url, params=params)
 
 
 def get_vfetch_protein_fna(base_url, id):
@@ -40,7 +40,7 @@ def get_vfetch_protein_fna(base_url, id):
     params = {
         "id": id
     }
-    return requests.get(url, params)
+    return requests.get(url, params=params)
 
 
 # POST REQUESTS FOR VFETCH
@@ -72,7 +72,7 @@ def get_vsummary_species(base_url, taxon_id):
     params = {
         "taxon_id": taxon_id
     }
-    return requests.get(url, params)
+    return requests.get(url, params=params)
 
 
 def get_vsummary_protein(base_url, id):
@@ -81,7 +81,7 @@ def get_vsummary_protein(base_url, id):
     params = {
         "id": id
     }
-    return requests.get(url, params)
+    return requests.get(url, params=params)
 
 
 def get_vsummary_vog(base_url, id):
@@ -90,7 +90,7 @@ def get_vsummary_vog(base_url, id):
     params = {
         "id": id
     }
-    return requests.get(url, params)
+    return requests.get(url, params=params)
 
 
 # POST REQUESTS FOR VSUMMARY
@@ -114,21 +114,20 @@ def post_vsummary_vog(base_url, input):
 
 
 # GET REQUESTS FOR VSEARCH
-def vsearch_protein(base_url, species_name, taxon_id, VOG_id, sort):
+def vsearch_protein(base_url, species_name, taxon_id, VOG_id):
     url = base_url + 'vsearch/protein'
 
     params = {
         "species_name": species_name,
         "taxon_id": taxon_id,
         "VOG_id": VOG_id,
-        "sort": sort
     }
-    return requests.get(url, params)
+    return requests.get(url, params=params)
 
 
 def vsearch_vog(base_url, id, pmin, pmax, smin, smax, functional_category, consensus_function, mingLCA, maxgLCA, mingGLCA,
                 maxgGLCA, ancestors, h_stringency, m_stringency, l_stringency, virus_specific, phages_nonphages,
-                proteins, species, tax_id, sort, union=False):
+                proteins, species, tax_id, union=False):
     url = base_url + 'vsearch/vog'
 
     for number in pmin, pmax, smin, smax:
@@ -156,13 +155,12 @@ def vsearch_vog(base_url, id, pmin, pmax, smin, smax, functional_category, conse
         "proteins": proteins,
         "species": species,
         "tax_id": tax_id,
-        "sort": sort,
         "union": union
     }
-    return requests.get(url, params)
+    return requests.get(url, params=params)
 
 
-def vsearch_species(base_url, ids, name, phage, source, version, sort):
+def vsearch_species(base_url, ids, name, phage, source, version):
     url = base_url + 'vsearch/species'
     params = {
         "ids": ids,
@@ -170,9 +168,8 @@ def vsearch_species(base_url, ids, name, phage, source, version, sort):
         "phage": phage,
         "source": source,
         "version": version,
-        "sort": sort
     }
-    return requests.get(url, params)
+    return requests.get(url, params=params)
 
 
 
