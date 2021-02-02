@@ -20,18 +20,18 @@ pip install vDirect
 Below is the search hierarchy: first specify vsearch, vsummary or vfetch, then the subsequent parameters.
 '-h' provides a list of the parameters that can be used for filtering.
 ```bash
-    vdirect       vsearch     species   species_search_parameters
-                              protein   protein_search_parameters
-                              vog       vog_search_parameters
+vdirect -base <base_url>    vsearch     species   species_search_parameters
+                                        protein   protein_search_parameters
+                                        vog       vog_search_parameters
                  
-                  vsummary    species   species_ids
-                              protein   protein_ids
-                              vog       vog_ids
+                            vsummary    species   species_ids
+                                        protein   protein_ids
+                                        vog       vog_ids
                  
-                  vfetch      protein   faa   protein_ids
-                                        fna   protein_ids
-                              vog       hmm   vog_ids
-                                        msa   vog_ids
+                            vfetch      protein   faa   protein_ids
+                                                  fna   protein_ids
+                                        vog       hmm   vog_ids
+                                                  msa   vog_ids
 ```
 ## Examples
 ```bash
@@ -42,6 +42,10 @@ vdirect vsummary vog -id VOG00001 VOG00033
 vdirect vfetch vog msa -id VOG00001 VOG00033 VOG00002
 
 vdirect vfetch protein faa -id VOG00001 VOG00033 VOG00002
+
+vdirect -base http://127.0.0.1:8000/ vsearch vog -pmax 10 -pmin 10
+vdirect -base http://127.0.0.1:8000/ vsearch species -n corona
+vdirect -base http://127.0.0.1:8000/ vsearch protein -n corona
 ```
 ## Authors
 
