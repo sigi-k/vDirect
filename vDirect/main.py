@@ -1,3 +1,5 @@
+import json
+
 if __name__ == '__main__':
     from API_requests import vsearch_species, vsearch_protein, vsearch_vog, \
     get_vsummary_species, get_vsummary_protein, get_vsummary_vog, post_vsummary_species, post_vsummary_protein, \
@@ -142,7 +144,7 @@ def main():
     protein_summary_parser = vsummary_sps.add_parser('protein', help='vsummary subparser for protein summary')
 
     # add arguments for vog_summary_parser:
-    vog_summary_parser.add_argument('-id', type=str, nargs='+', dest='id', default=sys.stdin,
+    vog_summary_parser.add_argument('-id', type=str, nargs='+', dest='id', default=None,
                                     help="VOG unique ID(s)")
     vog_summary_parser.add_argument('-f', '-format', type=str, action='store', nargs='?', dest='format',
                                     choices=['json', 'df'], help="specify a format: 'json' or 'df'")
@@ -202,19 +204,19 @@ def main():
 
         # if no ids given as parameters -> read from stdin
         else:
-            input = sys.stdin.read()
+            inp = sys.stdin.read()
             if args.return_object == 'protein':
                 if args.return_type == 'faa':
-                    r = post_vfetch_protein_faa(base_url=args.base_url, input=input)
+                    r = post_vfetch_protein_faa(base_url=args.base_url, input=inp)
                 elif args.return_type == 'fna':
-                    r = post_vfetch_protein_fna(base_url=args.base_url, input=input)
+                    r = post_vfetch_protein_fna(base_url=args.base_url, input=inp)
                 else:
                     raise Exception("Invalid return type")
             elif args.return_object == 'vog':
                 if args.return_type == 'msa':
-                    r = post_vfetch_vog_msa(base_url=args.base_url, input=input)
+                    r = post_vfetch_vog_msa(base_url=args.base_url, input=inp)
                 elif args.return_type == 'hmm':
-                    r = post_vfetch_vog_hmm(base_url=args.base_url, input=input)
+                    r = post_vfetch_vog_hmm(base_url=args.base_url, input=inp)
                 else:
                     raise Exception("Invalid return type")
             else:
@@ -222,7 +224,7 @@ def main():
 
         #ToDo: test posting..
         if r.status_code == 200:
-            print(r.json(), file=sys.stdout)
+            print(json.dumps(r.json()), file=sys.stdout)
         else:
             print(r.json().get('detail'), file=sys.stderr)
             sys.exit(1)
@@ -244,20 +246,21 @@ def main():
                 raise Exception("Invalid return object")
         # if no ids given as parameters -> read from stdin
         else:
-            input = sys.stdin.read()
+            inp = sys.stdin.read()
+            # inp = sys.stdin.read().rstrip("\n").replace('\'', '\"')
             if args.return_object == 'species':
-                r = post_vsummary_species(base_url=args.base_url, input=input)
+                r = post_vsummary_species(base_url=args.base_url, input=inp)
             elif args.return_object == 'protein':
-                r = post_vsummary_protein(base_url=args.base_url, input=input)
+                r = post_vsummary_protein(base_url=args.base_url, input=inp)
             elif args.return_object == 'vog':
-                r = post_vsummary_vog(base_url=args.base_url, input=input)
+                print("VOG SUMMARy")
+                r = post_vsummary_vog(base_url=args.base_url, input=inp)
             else:
                 raise Exception("Invalid return object")
 
         #ToDo: test posting..
         if r.status_code == 200:
-            print(r.json(), file=sys.stdout)
-            # print(json.dumps(r.json()), file=sys.stdout)
+            print(json.dumps(r.json()), file=sys.stdout)
         else:
             print(r.json().get('detail'), file=sys.stderr)
             sys.exit(1)
@@ -286,7 +289,7 @@ def main():
 
         # ToDo: how to print it..?
         if r.status_code == 200:
-            print(r.json())
+            print(json.dumps(r.json()), file=sys.stdout)
         else:
             print(r.json().get('detail'), file=sys.stderr)
             sys.exit(1)
@@ -296,7 +299,6 @@ if __name__ == '__main__':
     try:
         main()
     except Exception as ex:
-        print("EXCEPTION")
         print(ex, file=sys.stderr)
         sys.exit(1)
 
@@ -315,5 +317,5 @@ python main.py -base http://127.0.0.1:8000/ vsearch vog -pmax 10 -pmin 10
 python main.py -base http://127.0.0.1:8000/ vsearch species -n corona
 python main.py -base http://127.0.0.1:8000/ vsearch protein -n corona
 
-python vdirect.py vsearch vog -pmax 10 -pmin 33 | python vdirect.py vsummary vog
+python main.py -base http://127.0.0.1:8000/ vsearch vsearch vog -pmax 10 -pmin 33 | python main.py -base http://127.0.0.1:8000/ vsummary vog
 """
