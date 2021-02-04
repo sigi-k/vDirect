@@ -314,6 +314,9 @@ if __name__ == '__main__':
 """
 When piping: 
 if no results -> should return "no matches for the search criteria"
+pipe with &:
+python vDirect/main.py -base http://127.0.0.1:8000/ vsummary vog -id $(python vDirect/main.py -base http://127.0.0.1:8000/ vsearch vog -pmax 100 -pmin 100)
+
 $ python vdirect.py vsearch vog -pmax 10 | python vdirect.py vsummary vog
 Now works!
 $ python vdirect.py vsearch vog -pmax 10 -pmin 10 | python vdirect.py vsummary vog
