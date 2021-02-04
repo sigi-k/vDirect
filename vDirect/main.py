@@ -289,7 +289,13 @@ def main():
 
         # ToDo: how to print it..?
         if r.status_code == 200:
-            print(json.dumps(r.json()), file=sys.stdout)
+            # print(json.dumps(r.json()), file=sys.stdout)
+            l = []
+            for ele in r.json():
+                l.extend(list(ele.values()))
+            for ele in l:
+                print(ele, file=sys.stdout)
+            return l
         else:
             print(r.json().get('detail'), file=sys.stderr)
             sys.exit(1)
