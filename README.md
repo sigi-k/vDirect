@@ -1,6 +1,8 @@
 # VDirect
 
-VDirect is a user friendly tool to retrieve information from the VOGDB-API. It is a utility that builds URLs and sends requests to the server.
+VDirect is a user friendly tool to retrieve information from the VOGDB-API. It is a utility that builds URLs and sends requests to the server. <br>
+Functionality includes searching for species, proteins and virus orthologous groups (VOGs) objects, as well as getting more detailed information about these objects.
+Fetching Multiple Sequence Alignments (MSA) and Hidden Markov Matrices (HMM) is possible for each VOG, and Aminoacid and Nucleotide Sequences can be fetched for proteins.
 
 ##Dependencies:
 You can install the dependencies with
@@ -17,7 +19,7 @@ pip install vDirect
 
 ## Using the VOGDB-API with vDirect
 
-Below is the search hierarchy: first specify vsearch, vsummary or vfetch, then the subsequent parameters.
+Below is the search hierarchy: first specify vsearch, vsummary or vfetch, then the subsequent parameters.<br/>
 '-h' provides a list of the parameters that can be used for filtering.
 ```bash
 vdirect -base <base_url>    vsearch     species   species_search_parameters
@@ -35,17 +37,11 @@ vdirect -base <base_url>    vsearch     species   species_search_parameters
 ```
 ## Examples
 ```bash
-vdirect vsearch vog -pmin 10 -pmax 20 -fctcat Xu
-
-vdirect vsummary vog -id VOG00001 VOG00033
-
-vdirect vfetch vog msa -id VOG00001 VOG00033 VOG00002
-
-vdirect vfetch protein faa -id VOG00001 VOG00033 VOG00002
-
 vdirect -base http://127.0.0.1:8000/ vsearch vog -pmax 10 -pmin 10
 vdirect -base http://127.0.0.1:8000/ vsearch species -n corona
 vdirect -base http://127.0.0.1:8000/ vsearch protein -n corona
+vdirect -base http://127.0.0.1:8000/ vsummary vog -id $(vdirect -base http://127.0.0.1:8000/ vsearch vog -pmax 100 -pmin 100)
+
 ```
 ## Authors
 

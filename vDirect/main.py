@@ -302,27 +302,3 @@ if __name__ == '__main__':
 
 # ToDo:
 # write a function for formatting?
-"""
-When piping: 
-if no results -> should return "no matches for the search criteria"
-pipe with &:
-python main.py -base http://127.0.0.1:8000/ vsummary vog -id $(python main.py -base http://127.0.0.1:8000/ vsearch vog -pmax 100 -pmin 100)
-
-python main.py -base http://127.0.0.1:8000/ vsearch vog -pmax 10 -pmin 10
-python main.py -base http://127.0.0.1:8000/ vsearch species -n corona
-python main.py -base http://127.0.0.1:8000/ vsearch protein -n corona
-
-python main.py -base http://127.0.0.1:8000/ vsummary protein -id 11128.NP_742169.1
-
-
-python main.py -base http://127.0.0.1:8000/ vsummary protein -id 11128.NP_742136.1 11128.NP_742135.1
-
-
-
-
-python main.py -base http://127.0.0.1:8000/ vsearch vsearch vog -pmax 10 -pmin 33 | python main.py -base http://127.0.0.1:8000/ vsummary vog
-$ python vdirect.py vsearch vog -pmax 10 | python vdirect.py vsummary vog
-Now works!
-$ python main.py vsearch vog -pmax 10 -pmin 10 | python main.py vsummary vog
-works!
-"""
