@@ -116,8 +116,6 @@ def main():
                                             "for nonphages only")
     species_search_parser.add_argument('-s', '-source', type=str, action='store', nargs='?', dest='source',
                                        help="search for species found in the specified source")
-    species_search_parser.add_argument('-v', '-version', type=int, action='store', nargs='?', dest='version',
-                                       help="search for species found in the specified version")
     # species_search_parser.add_argument('-f', '-format', type=str, action='store', nargs='?', dest='format',
     #                                    choices=['json', 'df', 'stdout'], default='stdout',
     #                                    help="specify a format: 'json' or 'df' or 'stdout'")
@@ -270,7 +268,7 @@ def main():
     elif args.command == 'vsearch':
         if args.return_object == 'species':
             r = vsearch_species(base_url=args.base_url, ids=args.ids, name=args.name, phage=args.phage,
-                                source=args.source, version=args.version)
+                                source=args.source)
 
         elif args.return_object == 'protein':
             r = vsearch_protein(base_url=args.base_url, species_name=args.species_name, taxon_id=args.taxon_id,
