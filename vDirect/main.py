@@ -178,7 +178,6 @@ def main():
 
     args = parser.parse_args()
 
-    # ToDo: piping when search returns an error -> should recognize it.
     # FETCH:
     if args.command == 'vfetch':
         # if ID parameter given
@@ -220,7 +219,6 @@ def main():
             else:
                 raise Exception("Invalid return object")
 
-        #ToDo: test posting..
         if r.status_code == 200:
             print(json.dumps(r.json()), file=sys.stdout)
         else:
@@ -256,7 +254,6 @@ def main():
             else:
                 raise Exception("Invalid return object")
 
-        #ToDo: test posting..
         if r.status_code == 200:
             print(json.dumps(r.json()), file=sys.stdout)
         else:
@@ -286,7 +283,10 @@ def main():
             raise ValueError("Invalid return object")
 
         if r.status_code == 200:
-            print(r.text, file=sys.stdout)
+            if len(r.text) == 0:
+                raise Exception("No matches for the search criteria.")
+            else:
+                print(r.text, file=sys.stdout)
         else:
             print(r.json().get('detail'), file=sys.stderr)
             sys.exit(1)
@@ -299,9 +299,9 @@ if __name__ == '__main__':
         print(ex, file=sys.stderr)
         sys.exit(1)
 
+
 # ToDo:
 # write a function for formatting?
-# for Piping
 """
 When piping: 
 if no results -> should return "no matches for the search criteria"
