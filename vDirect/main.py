@@ -107,7 +107,7 @@ def main():
     #                                help="Parameter sort results by")
 
     # add arguments for species_search_parser:
-    species_search_parser.add_argument('-id', type=int, action='append', nargs='+', dest='ids',
+    species_search_parser.add_argument('-id', type=int, action='append', nargs='+', dest='taxon_id',
                                        help="species ID(s)")
     species_search_parser.add_argument('-n', '-name', type=str, action='store', nargs='?', dest='name',
                                        help="search for species name or part of a species name")
@@ -264,7 +264,7 @@ def main():
     # SEARCHES:
     elif args.command == 'vsearch':
         if args.return_object == 'species':
-            r = vsearch_species(base_url=args.base_url, ids=args.ids, name=args.name, phage=args.phage,
+            r = vsearch_species(base_url=args.base_url, taxon_id=args.taxon_id, name=args.name, phage=args.phage,
                                 source=args.source)
 
         elif args.return_object == 'protein':

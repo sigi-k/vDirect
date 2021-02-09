@@ -160,10 +160,10 @@ def vsearch_vog(base_url, id, pmin, pmax, smin, smax, functional_category, conse
     return requests.get(url, params=params)
 
 
-def vsearch_species(base_url, ids, name, phage, source):
+def vsearch_species(base_url, taxon_id, name, phage, source):
     url = base_url + 'vsearch/species'
     params = {
-        "ids": ids,
+        "taxon_id": taxon_id,
         "name": name,
         "phage": phage,
         "source": source,
