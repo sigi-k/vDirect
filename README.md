@@ -40,8 +40,11 @@ vdirect -base <base_url>    vsearch     species   species_search_parameters
 vdirect -base http://127.0.0.1:8000/ vsearch vog -pmax 10 -pmin 10
 vdirect -base http://127.0.0.1:8000/ vsearch species -n corona
 vdirect -base http://127.0.0.1:8000/ vsearch protein -n corona
+vdirect -base http://127.0.0.1:8000/ vfetch protein faa -id 1034149.YP_009198699.1
+```
+You can get summaries from the IDs returned by a search by using the shell syntax:
+```bash
 vdirect -base http://127.0.0.1:8000/ vsummary vog -id $(vdirect -base http://127.0.0.1:8000/ vsearch vog -pmax 100 -pmin 100)
-
 ```
 ## Authors
 
