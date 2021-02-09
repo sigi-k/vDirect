@@ -4,7 +4,7 @@ VDirect is a user friendly tool to retrieve information from the VOGDB-API. It i
 Functionality includes searching for species, proteins and virus orthologous groups (VOGs) objects, as well as getting more detailed information about these objects.
 Fetching Multiple Sequence Alignments (MSA) and Hidden Markov Matrices (HMM) is possible for each VOG, and Aminoacid and Nucleotide Sequences can be fetched for proteins.
 
-##Dependencies:
+## Dependencies:
 You can install the dependencies with
 ```bash
 pip install argparse
