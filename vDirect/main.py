@@ -35,7 +35,7 @@ def main():
     parser = argparse.ArgumentParser(description='Welcome to vDirect!', epilog='Thank you for using vDirect!')
 
     # ToDo Base URL as environment variable?
-    parser.add_argument('-base', type=str, action='store', nargs='?', dest='base_url', help="specify the base URL")
+    parser.add_argument(type=str, action='store', nargs='?', dest='base_url', help="specify the base URL")
 
     subparsers = parser.add_subparsers(dest='command', help='Subcommands')
 
