@@ -172,11 +172,14 @@ def vsearch_species(base_url, taxon_id, name, phage, source):
 
 
 
-
+"""
+For future development
 # function to save hmm vFetch response objects (for now just hmm, msa)
 def save_object(object, output_path="./test.txt"):
-    """Saves the response object to output path"""
+    # Saves the response object to output path
 
     with open(output_path, 'a') as file:
         for document in object:
             file.write(document)
+            
+"""

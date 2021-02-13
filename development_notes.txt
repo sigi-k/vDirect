@@ -1,0 +1,26 @@
+vDirect Development notes:
+
+The code can be subdivided into two parts:
+	1. Argument Parsing
+	2. Making requests
+
+ad 1) The argparse module is used in main.py, and several subparsers are defined:
+The parsing is structured as follows:
+Parser      vsearch_parser      species_search_parser
+                                protein_search_parser
+                                vog_search_parser
+
+            vsummmary_parser    species_summary_parser
+                                protein_summary_parser
+                                vog_summary_parser
+
+            vfetch_parser       protein_fetch_parser
+                                vog_fetch_parser
+
+These parsers more or less correspond to the different functions implemented in the VOGDB-API. The requests are made in the API_requests module, and upon receiving the response in the main module, it’s status code is checked, and error messages given, if applicable.
+
+ad 2) In the API_request module, every request has its own function. A Dictionary called “params” holds the parameters, and these, along with the base URL is used to make a request to the API.
+
+
+Testing:
+Testing of vDirect comprises the checking of the created URLs against the correct URLs from the VOGDB-API.

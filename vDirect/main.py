@@ -34,7 +34,6 @@ Parser      vsearch_parser      species_search_parser
 def main():
     parser = argparse.ArgumentParser(description='Welcome to vDirect!', epilog='Thank you for using vDirect!')
 
-    # ToDo Base URL as environment variable?
     parser.add_argument(type=str, action='store', nargs='?', dest='base_url', help="specify the base URL")
 
     subparsers = parser.add_subparsers(dest='command', help='Subcommands')
@@ -244,7 +243,6 @@ def main():
         # if no ids given as parameters -> read from stdin
         else:
             inp = sys.stdin.read()
-            # inp = sys.stdin.read().rstrip("\n").replace('\'', '\"')
             if args.return_object == 'species':
                 r = post_vsummary_species(base_url=args.base_url, input=inp)
             elif args.return_object == 'protein':
