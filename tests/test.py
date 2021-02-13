@@ -1,10 +1,8 @@
 from vDirect import API_requests
-import pytest
 
 
 base_url = "http://127.0.0.1:8000/"
 
-# @pytest.fixture(scope="session")
 class TestSpeciesSearch:
     def test_vsearch_species_ids(self):
         taxon_id = [11128, 1002724]
