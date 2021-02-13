@@ -240,6 +240,7 @@ def main():
                 r = get_vsummary_vog(id=args.id, base_url=args.base_url)
             else:
                 raise Exception("Invalid return object")
+
         # if no ids given as parameters -> read from stdin
         else:
             inp = sys.stdin.read()
@@ -298,7 +299,3 @@ if __name__ == '__main__':
     except Exception as ex:
         print(ex, file=sys.stderr)
         sys.exit(1)
-
-
-# ToDo:
-# write a function for formatting?
