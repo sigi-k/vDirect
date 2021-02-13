@@ -3,6 +3,7 @@ from vDirect import API_requests
 
 base_url = "http://127.0.0.1:8000/"
 
+
 class TestSpeciesSearch:
     def test_vsearch_species_ids(self):
         taxon_id = [11128, 1002724]
@@ -50,6 +51,7 @@ class TestProteinSearch:
         url = API_requests.vsearch_protein(base_url, species_name=None, taxon_id=None, VOG_id=VOG_id).url
         expected = "http://127.0.0.1:8000/vsearch/protein?VOG_id=VOG00078&VOG_id=VOG00001"
         assert url.lower() == expected.lower()
+
 
 class TestVOGSearch:
     params = {
