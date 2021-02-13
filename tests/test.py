@@ -1,8 +1,3 @@
-import urllib
-from dataclasses import replace
-
-import urllib3
-from urllib import parse
 from vDirect import API_requests
 
 
