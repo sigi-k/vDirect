@@ -159,9 +159,9 @@ class TestVOGSearch:
                                        l_stringency=None, virus_specific=None,
                                        phages_nonphages=None,
                                        proteins=None, species=self.params.get("species"), tax_id=None, union=None).url
-        #Todo: space encoded differently
         expected = "http://127.0.0.1:8000/vsearch/vog?species=Bovine%20coronavirus"
-        url.replace('+', "%20")
+        # encode space in the url as '%20' instead of '+'
+        url = url.replace('+', "%20")
         assert url.lower() == expected.lower()
 
     def test_vsearch_high_stringency(self):
