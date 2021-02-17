@@ -99,11 +99,6 @@ def main():
     vog_search_parser.add_argument('-u', '-union', action='store_true', dest='union',
                                    help="Do you want an (u)nion or an (i)ntersection search when searching VOGs by "
                                         "Species names or Taxonomy IDs? Default = False.")
-    # vog_search_parser.add_argument('-f', '-format', type=str, action='store', nargs='?', dest='format',
-    #                                choices=['json', 'df', 'stdout'], default='df',
-    #                                help="specify a format: 'json' or 'df' or 'stdout'")
-    # vog_search_parser.add_argument('-sort', type=str, action='store', nargs='?', dest='sort',
-    #                                help="Parameter sort results by")
 
     # add arguments for species_search_parser:
     species_search_parser.add_argument('-id', type=int, action='append', nargs='+', dest='taxon_id',
@@ -115,11 +110,6 @@ def main():
                                             "for nonphages only")
     species_search_parser.add_argument('-s', '-source', type=str, action='store', nargs='?', dest='source',
                                        help="search for species found in the specified source")
-    # species_search_parser.add_argument('-f', '-format', type=str, action='store', nargs='?', dest='format',
-    #                                    choices=['json', 'df', 'stdout'], default='stdout',
-    #                                    help="specify a format: 'json' or 'df' or 'stdout'")
-    # species_search_parser.add_argument('-sort', type=str, action='store', nargs='?', dest='sort',
-    #                                    help="Parameter sort results by")
 
     # add arguments for protein_search_parser:
     protein_search_parser.add_argument('-tid', '-taxonid', type=int, action='append', nargs='+', dest='taxon_id',
@@ -128,11 +118,6 @@ def main():
                                        help="search for species name or part of species name")
     protein_search_parser.add_argument('-vid', '-vogid', type=str, action='append', nargs='+', dest='VOG_id',
                                        help="search for VOG IDs")
-    # protein_search_parser.add_argument('-f', '-format', type=str, action='store', nargs='?', dest='format',
-    #                                    choices=['json', 'df', 'stdout'], default='df',
-    #                                    help="specify a format: 'json', 'df' or 'stdout'")
-    # protein_search_parser.add_argument('-sort', type=str, action='store', nargs='?', dest='sort',
-    #                                    help="Parameter sort results by")
 
     # add subparsers for vSummary:
     vsummary_sps = vsummary_parser.add_subparsers(dest='return_object', help='subparsers for vsummary_parser')
@@ -143,20 +128,14 @@ def main():
     # add arguments for vog_summary_parser:
     vog_summary_parser.add_argument('-id', type=str, nargs='+', dest='id', default=None,
                                     help="VOG unique ID(s)")
-    # vog_summary_parser.add_argument('-f', '-format', type=str, action='store', nargs='?', dest='format',
-    #                                 choices=['json', 'df'], help="specify a format: 'json' or 'df'")
 
     # add arguments for protein_summary_parser:
     protein_summary_parser.add_argument('-id', type=str, nargs='+', dest='id', default=sys.stdin,
                                         help="protein ID(s)")
-    # protein_summary_parser.add_argument('-f', '-format', type=str, action='store', nargs='?', dest='format',
-    #                                     choices=['json', 'df'], help="specify a format: 'json' or 'df'")
 
     # add arguments for species_summary_parser:
     species_summary_parser.add_argument('-id', type=int, nargs='+', dest='id', default=sys.stdin,
                                         help="taxon ID(s)")
-    # species_summary_parser.add_argument('-f', '-format', type=str, action='store', nargs='?', dest='format',
-    #                                     choices=['json', 'df'], help="specify a format: 'json' or 'df'")
 
     # add subparsers for vFetch:
     vfetch_sps = vfetch_parser.add_subparsers(dest='return_object', help='subparsers for vfetch_parser')
